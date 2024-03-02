@@ -50,9 +50,12 @@ public class App {
     }
     public static void main(String[] args) {
         //se crea la instancia de la clase operaciones
-        Operaciones operaciones = new Operaciones(10, 5);
+        //Operaciones operaciones = new Operaciones(10, 5);
 
         // se llama al metodo para imprimir los resultadis
-        operaciones.Resultados();
+        //operaciones.Resultados();
+    String numero="01";
+    System.err.println(Integer.parseInt(numero));
+    
     }
 }
