@@ -1,25 +1,59 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Scanner;
+
 public class App {
+
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         Deck deck = new Deck();
-        deck.shuffle();
+        int opcion;
 
-        // Show the first card
-        System.out.println("Primera carta:");
-        deck.head();
+        do {
+            opcion = showMenu();
+            switch (opcion) {
+                case 1:
+                    deck.shuffle();
+                    break;
+                case 2:
+                    deck.head();
+                    break;
+                case 3:
+                    deck.pick();
+                    break;
+                case 4:
+                    deck.hand();
+                    break;
+                case 0:
+                    System.out.println("Saliendo del juego...");
+                    break;
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        } while (opcion != 0);
+    }
 
-        // Pick a random card
-        System.out.println("\nCarta al azar:");
-        deck.pick();
-
-        // Get a hand of five cards
-        System.out.println("\nMano de cinco cartas:");
-        String[] mano = deck.hand();
-        for (String carta : mano) {
-            System.out.println(carta);
-        }
+    public static int showMenu() {
+        int opcion;
+        do {
+            System.out.println("\nBienvenido a Poker!");
+            System.out.println("Selecciona una opción:");
+            System.out.println("1 Mezclar deck");
+            System.out.println("2 Sacar una carta");
+            System.out.println("3 Carta al azar");
+            System.out.println("4 Generar una mano de 5 cartas");
+            System.out.println("0 Salir");
+            try {
+                opcion = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                opcion = -1;
+            }
+            if (opcion < 0 || opcion > 4) {
+                System.out.println("Opción no válida. Ingresa un número del 0 al 4.");
+            }
+        } while (opcion < 0 || opcion > 4);
+        return opcion;
     }
 }
 
@@ -66,26 +100,26 @@ class Deck {
         System.out.println("Quedan " + cartas.size() + " cartas en el Deck.");
     }
 
-    public String[] hand() {
+    public void hand() {
         if (cartas.size() < 5) {
             System.out.println("No hay suficientes cartas en el Deck para una mano.");
-            return new String[0];
+            return;
         }
-        String[] mano = new String[5];
+        ArrayList<Card> mano = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Card carta = cartas.remove(0);
             descartes.add(carta);
-            mano[i] = carta.toString();
+            mano.add(carta);
         }
+        System.out.println("Mano generada: " + mano);
         System.out.println("Quedan " + cartas.size() + " cartas en el Deck.");
-        return mano;
     }
 }
 
 enum Palo {
     TREBOLES(Color.NEGRO), CORAZONES(Color.ROJO), PICAS(Color.NEGRO), DIAMANTES(Color.ROJO);
 
-    private Color color;
+    private final Color color;
 
     private Palo(Color color) {
         this.color = color;
@@ -97,18 +131,18 @@ enum Palo {
 }
 
 enum Color {
-    ROJO, NEGRO
+    NEGRO, ROJO
 }
 
 enum Valor {
-    DOS, TRES, CUATRO, CINCO, SEIS, SIETE, OCHO, NUEVE, DIEZ, JOTA, REINA, REY, AS
+    AS, DOS, TRES, CUATRO, CINCO, SEIS, SIETE, OCHO, NUEVE, DIEZ, J, Q, K
 }
 
 class Card {
 
-    private Palo palo;
-    private Color color;
-    private Valor valor;
+    private final Palo palo;
+    private final Color color;
+    private final Valor valor;
 
     public Card(Palo palo, Color color, Valor valor) {
         this.palo = palo;
@@ -116,7 +150,8 @@ class Card {
         this.valor = valor;
     }
 
+    @Override
     public String toString() {
-        return palo + "," + color + "," + valor;
+        return valor + " de " + palo;
     }
 }
